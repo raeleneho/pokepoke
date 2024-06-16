@@ -18,6 +18,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={fonts.monserrat.variable}>
+      <head>
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/pokemon-ball.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/pokemon-ball.png"
+        />
+      </head>
       <body className={inter.className}>
         {" "}
         <Providers>{children}</Providers>

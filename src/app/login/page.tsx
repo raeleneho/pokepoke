@@ -1,19 +1,20 @@
 "use client";
-import { CustomButton } from "@/components/CustomButton";
+import Image from "next/image";
+import { SplashScreen } from "@/components/SplashScreen";
 import {
   Box,
+  Button,
   Flex,
   FormControl,
   FormErrorMessage,
   Heading,
-  Image,
   Input,
   VStack,
   keyframes,
-  useBreakpointValue,
 } from "@chakra-ui/react";
-
 import { css, Global } from "@emotion/react";
+
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -31,25 +32,19 @@ const shrink = keyframes`
     transform: scale(1);
   }
   to {
-    transform: scale(0.5);
+    transform: scale(0.7);
   }
-
 `;
-interface FormValues {
+
+export interface FormValues {
   username: string;
   jobTitle: string;
 }
 
 export default function Page() {
   const [isShrunk, setIsShrunk] = useState(false);
-  //   const [formData, setFormData] = useState<FormValues | null>({
-  //     username: "",
-  //     jobTitle: "",
-  //   });
-  const direction = useBreakpointValue<"row" | "column">({
-    base: "column",
-    md: "row",
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -78,23 +73,37 @@ export default function Page() {
       setValue("username", parsedData.username);
       setValue("jobTitle", parsedData.jobTitle);
     }
-  }, [setValue]);
 
-  //   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { name, value } = e.target as HTMLInputElement;
-  //     setFormData((prevData) => ({
-  //       ...prevData,
-  //       [name]: value,
-  //     }));
-  //   };
+    // const isLoggedIn = localStorage.getItem("isLoggedIn");
+    // if (isLoggedIn) {
+    //   router.replace("/home");
+    // }
+  }, [setValue, router]);
 
   const onSubmit = (data: FormValues) => {
+    setIsLoading(true);
     localStorage.setItem("formData", JSON.stringify(data));
     console.log(data);
+    // Simulate an async login process
+    setTimeout(() => {
+      setIsLoading(false);
+      localStorage.setItem("isLoggedIn", "true"); // Set login status in local storage
+      //   router.replace("/");
+    }, 800);
   };
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <div>
-      <Box position="relative" width="100%" height="100vh" bgColor="#FFD55C">
+      <Box
+        position="relative"
+        width="100%"
+        height="100vh"
+        bgColor="brand.secondary.yellow"
+      >
         <Global
           styles={css`
             .fade-in {
@@ -106,91 +115,63 @@ export default function Page() {
           `}
         />
 
-        {/* <Box
-          position="absolute"
-          bottom={0}
-          left={0} // Align to the right side
-          width="40%" // Take up 30% width on larger screens
-          height="100%" // Take up full screen height
-          boxShadow={{ base: "none", md: "xl" }} // No shadow on mobile, xl shadow on larger screens
-          bgColor="#FFD55C"
-          zIndex={-1}
-          transformOrigin="top right" // Set transform origin
-          transform="skewX(-15deg)"
-        ></Box> */}
         <Flex
-          direction={direction}
-          justify="space-evenly"
+          direction={{ base: "column", md: "row" }}
+          justify="center"
           align="center"
           height="100%"
-          color="black"
-          px={{ base: 4 }}
+          px={{ base: 4, md: 8 }}
         >
           <Image
             src="/images/pikachu.png"
             alt="Pikachu"
-            order={{ base: 2, md: 1 }}
-            width={{ base: "50%", md: "auto" }}
-            height={{ base: "auto", md: "50vh", lg: "70vh" }}
+            layout="responsive"
+            width={100}
+            height={100}
+            sizes="(min-width: 768px), 50vh, 70vh"
             objectFit="contain"
             objectPosition="bottom left"
             aria-hidden="true"
           />
-          {/* <Image
-            src="/images/pikachu.png"
-            alt="Pikachu"
-            width={{ base: "100%", md: "auto" }}
-            height={{ base: "auto", md: "50vh", lg: "70vh" }}
-            objectFit="contain"
-            objectPosition="bottom left"
-            aria-hidden="true"
-          /> */}
-
-          {/* <Image
-            src="/images/pikachu.png"
-            alt="Pikachu"
-            position="absolute"
-            bottom={0}
-            left={0}
-            width={{ base: "100%", md: "auto" }}
-            height={{ base: "auto", md: "50vh", lg: "100vh" }}
-            objectFit="cover"
-            objectPosition="bottom left"
-            zIndex={1}
-            aria-hidden="true"
-          /> */}
 
           <Flex
             direction="column"
             justify="center"
             alignItems="center"
             order={{ base: 1, md: 2 }}
+            width={{ base: "100%", md: "50%" }}
           >
             <Heading
               as="h1"
-              fontStyle="italic"
               fontWeight={900}
-              fontSize={{ md: "2xl", lg: "80px" }}
+              color="brand.blue.900"
+              fontStyle="italic"
+              fontSize={{ base: "2xl", md: "2xl", lg: "80px" }}
               className={`fade-in ${isShrunk ? "shrink" : ""}`}
               style={{ transformOrigin: "center" }}
+              mb={{ base: 4 }}
             >
               POKÉSAURUS
             </Heading>
 
             <VStack
               as="form"
-              spacing={4}
+              spacing={{ base: 2, md: 4 }}
               p={6}
               bgColor="white"
               boxShadow="2xl"
               rounded="md"
               bg="white"
+              maxWidth="100%"
+              width={{ base: "100%", md: "400px" }}
               onSubmit={handleSubmit(onSubmit)}
             >
               <FormControl isInvalid={!!errors.username}>
                 <Input
                   variant="flushed"
                   placeholder="Username"
+                  type="text"
+                  aria-required
                   {...register("username", {
                     required: "This is required",
                     minLength: {
@@ -207,6 +188,8 @@ export default function Page() {
                 <Input
                   variant="flushed"
                   placeholder="Job Title"
+                  type="text"
+                  aria-required
                   {...register("jobTitle", {
                     required: "Job title is required",
                     minLength: {
@@ -220,21 +203,22 @@ export default function Page() {
                 </FormErrorMessage>
               </FormControl>
 
-              <CustomButton
+              <Button
                 rightIcon={
                   <Image
-                    src="images/pokemon-ball.png"
-                    width="20px"
-                    height="100%"
+                    src="/images/pokemon-ball.png"
+                    fill
                     alt="pokemon-icon"
                     objectFit="contain"
                   />
                 }
-                color={isValid ? "teal" : "gray"}
+                type="submit"
+                color="white"
+                bgColor={isValid ? "teal" : "gray"}
                 isDisabled={isSubmitting || !isValid}
               >
                 Go!
-              </CustomButton>
+              </Button>
             </VStack>
           </Flex>
         </Flex>
