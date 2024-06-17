@@ -13,17 +13,17 @@ import {
   SliderTrack,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import { PokemonDetails } from "../types/pokemon";
 import { CustomSpinner } from "./CustomSpinner";
+import { GetPokemonDetailsQuery } from "../generated/graphql";
 
 interface PokemonDetailsModalProps {
   bgColor: string;
   isOpen: boolean;
   onClose: () => void;
-  pokemonDetails: PokemonDetails | null;
+  pokemonDetails: GetPokemonDetailsQuery["pokemon_v2_pokemon"][0] | null;
   detailsLoading: boolean;
   pokemonImage: string;
-  chidren?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const PokemonDetailsModal = ({
@@ -34,9 +34,8 @@ const PokemonDetailsModal = ({
   pokemonImage,
   detailsLoading,
 }: PokemonDetailsModalProps) => {
-  console.log("pokemonDetails", pokemonDetails);
-  const firstLetter = pokemonDetails?.name.charAt(0).toUpperCase();
-  const remainingName = pokemonDetails?.name.slice(1);
+  const firstLetter = pokemonDetails?.name?.charAt(0).toUpperCase();
+  const remainingName = pokemonDetails?.name?.slice(1);
 
   return (
     <Modal
@@ -62,24 +61,19 @@ const PokemonDetailsModal = ({
               <Box position="relative" mb={4}>
                 <Box
                   position="relative"
+                  top="50px"
                   left="50%"
-                  transform="translateX(-50%)"
+                  transform="translate(-50%, -40%)"
                   zIndex="1"
                 >
                   <Image
                     src={pokemonImage || ""}
-                    alt={pokemonDetails?.name}
+                    alt={pokemonDetails?.name || "Pokemon"}
                     width={100}
                     height={100}
                   />
                 </Box>
-                <Box
-                  textAlign="center"
-                  position="relative"
-                  transform="translate(-50%, 10%)"
-                  zIndex={0}
-                  mt={-20}
-                >
+                <Box textAlign="center" position="relative" mt={-10} zIndex={0}>
                   <Text fontSize="80px" fontWeight={900} color="white">
                     {firstLetter}
                   </Text>
@@ -103,17 +97,17 @@ const PokemonDetailsModal = ({
                   {remainingName}
                 </Text>
                 <Flex mt={2}>
-                  {pokemonDetails?.types.map((type) => (
+                  {pokemonDetails?.pokemon_v2_pokemontypes?.map((type) => (
                     <Tag
                       size="md"
-                      key={type.type.name}
+                      key={type.pokemon_v2_type?.name}
                       borderRadius="full"
                       variant="outline"
                       bgColor={bgColor}
                       color="brand.blue.900"
                       mr={2}
                     >
-                      {type.type.name}
+                      {type.pokemon_v2_type?.name}
                     </Tag>
                   ))}
                 </Flex>
@@ -128,14 +122,14 @@ const PokemonDetailsModal = ({
                     Abilities:
                   </Text>
                   <Text fontSize="14px">
-                    {pokemonDetails?.abilities
-                      .map((ability) => ability.ability.name)
+                    {pokemonDetails?.pokemon_v2_pokemonabilities
+                      ?.map((ability) => ability.pokemon_v2_ability?.name)
                       .join(", ")}
                   </Text>
                 </Flex>
-                {pokemonDetails?.stats.map((stat) => (
+                {pokemonDetails?.pokemon_v2_pokemonstats?.map((stat) => (
                   <Flex
-                    key={stat.stat.name}
+                    key={stat.pokemon_v2_stat?.name}
                     justify="space-between"
                     align="center"
                     w="100%"
@@ -144,9 +138,9 @@ const PokemonDetailsModal = ({
                     <Text
                       fontSize="12px"
                       color="brand.blue.900"
-                      key={stat.stat.name}
+                      key={stat.pokemon_v2_stat?.name}
                     >
-                      {stat.stat.name}
+                      {stat.pokemon_v2_stat?.name}
                     </Text>
                     <Slider
                       size="lg"

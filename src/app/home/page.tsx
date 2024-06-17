@@ -1,25 +1,28 @@
 "use client";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Box,
-  Button,
   Flex,
-  Heading,
-  Text,
-  Avatar,
   useTheme,
   useDisclosure,
   IconButton,
 } from "@chakra-ui/react";
-import { IoPersonCircle } from "react-icons/io5";
 import { useRouter, useSearchParams } from "next/navigation";
-import { GET_POKEMONS, GET_POKEMON_DETAILS } from "./queries";
-import { PokemonData } from "../../types/pokemon";
+
 import PokemonDetailsModal from "@/components/PokemonDetailsModal";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
-import { SplashScreen } from "@/components/SplashScreen";
-import { PokemonCard } from "@/components/PokemonCard";
+import PokemonCard from "@/components/PokemonCard";
+import SplashScreen from "@/components/SplashScreen";
+import Navbar from "@/components/NavBar";
+import { useSearchContext } from "@/components/SearchContext";
+
+import {
+  GetPokemonDetailsDocument,
+  GetPokemonDetailsQuery,
+  GetPokemonsDocument,
+  GetPokemonsQuery,
+} from "../../generated/graphql";
 
 const ITEMS_PER_PAGE = 14;
 
@@ -30,17 +33,34 @@ export default function Home() {
   const offset = (page - 1) * ITEMS_PER_PAGE;
   const theme = useTheme();
   const colors = Object.keys(theme.colors.brand.secondary);
+  const { searchTerm, setSearchTerm } = useSearchContext();
+  const searchQuery = searchParams.get("search") || "";
 
-  const { loading, error, data } = useQuery<{ pokemons: PokemonData }>(
-    GET_POKEMONS,
-    {
-      variables: { limit: ITEMS_PER_PAGE, offset },
+  useEffect(() => {
+    if (searchQuery) {
+      setSearchTerm(searchQuery);
     }
-  );
+  }, [searchQuery, setSearchTerm]);
 
-  const [username, setUsername] = useState("");
+  const {
+    loading: paginatedLoading,
+    error: paginatedError,
+    data: paginatedData,
+  } = useQuery<GetPokemonsQuery>(GetPokemonsDocument, {
+    variables: {
+      limit: ITEMS_PER_PAGE,
+      offset,
+      searchTerm: searchQuery,
+    },
+  });
+
   const [clickedImage, setClickedImage] = useState("");
   const [selectedBgColor, setSelectedBgColor] = useState<string>("");
+
+  const filteredData = useMemo(() => {
+    return paginatedData?.pokemon_v2_pokemon ?? [];
+  }, [paginatedData]);
+
   const [
     getPokemonDetails,
     {
@@ -48,93 +68,57 @@ export default function Home() {
       loading: pokemonDetailsLoading,
       error: pokemonDetailsError,
     },
-  ] = useLazyQuery(GET_POKEMON_DETAILS);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  ] = useLazyQuery<GetPokemonDetailsQuery>(GetPokemonDetailsDocument);
 
-  useEffect(() => {
-    const storedData = localStorage.getItem("formData");
-    if (storedData) {
-      const formData = JSON.parse(storedData);
-      const username = formData.username;
-      setUsername(username);
-    } else {
-      console.log("No username found in localStorage");
-    }
-  }, []);
+  const {
+    isOpen: isProfileModalOpen,
+    onOpen: onProfileModalOpen,
+    onClose: onProfileModalClose,
+  } = useDisclosure();
 
   const navigatePage = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) {
       return;
     }
-    router.push(`home?page=${newPage}`);
+    const queryString = searchQuery
+      ? `?page=${newPage}&search=${searchQuery}`
+      : `?page=${newPage}`;
+    router.push(`home${queryString}`);
   };
 
-  const totalPages = Math.ceil((data?.pokemons?.count || 0) / ITEMS_PER_PAGE);
+  useEffect(() => {
+    if (searchQuery) {
+      router.replace(`home?page=${page}&search=${searchQuery}`);
+    } else {
+      router.replace(`home?page=${page}`);
+    }
+  }, [page, searchQuery, router]);
 
-  if (loading) return <SplashScreen />;
-  if (error) return <p>Error: {error.message}</p>;
+  const totalPages = Math.ceil(
+    (paginatedData?.pokemon_v2_pokemon_aggregate?.aggregate?.count || 0) /
+      ITEMS_PER_PAGE
+  );
+  if (paginatedLoading) return <SplashScreen />;
+  if (paginatedError) return <p>Error: {paginatedError?.message}</p>;
 
   return (
     <Box position="relative" height="100vh" padding={8}>
-      <Flex justify="space-between" align="center">
-        <Flex justify="flex-start" align="flex-end" gap={4}>
-          <Heading
-            as="h1"
-            fontWeight={900}
-            color="brand.blue.900"
-            fontStyle="italic"
-            fontSize={{ md: "2xl" }}
-          >
-            POKÉSAURUS
-          </Heading>
-          <Text
-            fontWeight={440}
-            color="brand.blue.500"
-            letterSpacing="0.02em"
-            display={{ base: "none", md: "block" }}
-          >
-            Your ultimate Pokémon pocketbook.
-          </Text>
-        </Flex>
-        {username && (
-          <>
-            <Box
-              display={{ base: "inline-flex", md: "none" }}
-              alignItems="center"
-            >
-              <Avatar
-                bgColor="brand.yellow"
-                color="brand.blue.900"
-                name={username}
-                onClick={() => router.push("/profile")}
-                aria-label={`Profile of ${username}`}
-              />
-            </Box>
-
-            <Button
-              leftIcon={<IoPersonCircle size="24px" />}
-              bgColor="brand.secondary.yellow"
-              rounded="full"
-              onClick={() => router.push("/profile")}
-              display={{ base: "none", md: "inline-flex" }}
-              aria-label={`Profile of ${username}`}
-            >
-              <Text color="brand.blue.500">Hello, {username}</Text>
-            </Button>
-          </>
-        )}
-      </Flex>
+      <Navbar displaySearch />
       <main>
         <Flex flexWrap="wrap" justifyContent="center" py={8}>
-          {data?.pokemons.results.map((pokemon, index) => {
+          {filteredData.map((pokemon, index) => {
             const bgColor =
               theme.colors.brand.secondary[colors[index % colors.length]];
+            const spriteUrl =
+              pokemon.pokemon_v2_pokemonsprites[0].sprites.other[
+                "official-artwork"
+              ].front_default;
 
             const selectCard = () => {
-              setClickedImage(pokemon.artwork);
+              setClickedImage(spriteUrl);
               setSelectedBgColor(bgColor);
               getPokemonDetails({ variables: { name: pokemon.name } });
-              onOpen();
+              onProfileModalOpen();
             };
 
             return (
@@ -153,10 +137,8 @@ export default function Home() {
             icon={<RiArrowLeftSLine />}
             aria-label="Previous Page"
             onClick={() => navigatePage(page - 1)}
-            disabled={page === 1}
-          >
-            Previous
-          </IconButton>
+            isDisabled={page === 1}
+          />
           <Box>
             {page} of {totalPages}
           </Box>
@@ -164,19 +146,17 @@ export default function Home() {
             icon={<RiArrowRightSLine />}
             aria-label="Next Page"
             onClick={() => navigatePage(page + 1)}
-            disabled={page >= totalPages}
-          >
-            Next
-          </IconButton>
+            isDisabled={page >= totalPages}
+          />
         </Flex>
       </main>
       <PokemonDetailsModal
-        isOpen={isOpen}
+        isOpen={isProfileModalOpen}
         bgColor={selectedBgColor}
-        onClose={onClose}
+        onClose={onProfileModalClose}
         pokemonImage={clickedImage}
         detailsLoading={pokemonDetailsLoading}
-        pokemonDetails={pokemonDetailsData?.pokemon}
+        pokemonDetails={pokemonDetailsData?.pokemon_v2_pokemon[0] || null}
       />
     </Box>
   );

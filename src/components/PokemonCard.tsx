@@ -2,10 +2,10 @@ import { Box, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
-import { Pokemon } from "../types/pokemon";
+import { GetPokemonsQuery } from "../generated/graphql";
 
 interface PokemonCardProps {
-  pokemon: Pokemon;
+  pokemon: GetPokemonsQuery["pokemon_v2_pokemon"][0];
   bgColor: string;
   selected?: string;
   onClick: () => void;
@@ -14,15 +14,16 @@ interface PokemonCardProps {
 const MotionBox = motion(Box);
 
 const bounceAnimation = {
-  y: [-10, 0],
+  y: ["-50%", "-55%", "-50%"],
+  x: ["-50%"],
   transition: {
-    duration: 0.8,
-    repeat: Infinity,
+    duration: 0.4,
+    repeat: 2,
     repeatType: "loop",
   },
 };
 
-export const PokemonCard = ({
+const PokemonCard = ({
   pokemon,
   bgColor,
   onClick,
@@ -30,6 +31,10 @@ export const PokemonCard = ({
 }: PokemonCardProps) => {
   const firstLetter = pokemon.name.charAt(0).toUpperCase();
   const remainingName = pokemon.name.slice(1);
+
+  const artworkUrl =
+    pokemon.pokemon_v2_pokemonsprites[0]?.sprites.other["official-artwork"]
+      .front_default;
 
   return (
     <MotionBox
@@ -54,14 +59,11 @@ export const PokemonCard = ({
         left="50%"
         transform="translate(-50%, -40%)"
         zIndex="1"
-        animate={selected === pokemon.artwork ? bounceAnimation : {}}
+        animate={selected === artworkUrl ? bounceAnimation : {}}
       >
-        <Image
-          src={pokemon.artwork}
-          alt={pokemon.name}
-          width={180}
-          height={180}
-        />
+        {artworkUrl && (
+          <Image src={artworkUrl} alt={pokemon.name} width={180} height={180} />
+        )}
       </MotionBox>
       <Box textAlign="center" mt={2} position="relative" zIndex={0}>
         <Text
@@ -85,3 +87,5 @@ export const PokemonCard = ({
     </MotionBox>
   );
 };
+
+export default PokemonCard;

@@ -2,7 +2,7 @@
 import { Center } from "@chakra-ui/react";
 import { CustomSpinner } from "./CustomSpinner";
 
-export const SplashScreen = () => (
+const SplashScreen = () => (
   <Center
     height="100vh"
     backgroundColor="brand.blue.900"
@@ -16,3 +16,5 @@ export const SplashScreen = () => (
     <CustomSpinner />
   </Center>
 );
+
+export default SplashScreen;
