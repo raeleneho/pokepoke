@@ -10,6 +10,7 @@ const SearchBar = () => {
   const triggerSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchTerm.trim() !== "") {
       router.replace(`home?page=1&search=${searchTerm}`);
+      setSearchTerm("");
     }
   };
 
@@ -24,6 +25,7 @@ const SearchBar = () => {
         </InputLeftElement>
         <Input
           type="text"
+          data-testid="search-input"
           placeholder="Search Pokémon"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

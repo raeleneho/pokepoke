@@ -36,7 +36,7 @@ export default function Page() {
       username: "",
       jobTitle: "",
     },
-    mode: "onChange",
+    mode: "onBlur",
   });
 
   useEffect(() => {

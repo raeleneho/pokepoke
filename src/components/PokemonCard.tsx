@@ -38,6 +38,7 @@ const PokemonCard = ({
 
   return (
     <MotionBox
+      data-testid="pokemon-card"
       width="240px"
       bg={bgColor}
       p={4}

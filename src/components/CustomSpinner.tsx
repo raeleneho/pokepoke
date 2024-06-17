@@ -8,7 +8,11 @@ const spin = keyframes`
 
 export const CustomSpinner = () => {
   return (
-    <Box display="inline-block" animation={`${spin} 1s linear infinite`}>
+    <Box
+      data-testid="custom-spinner"
+      display="inline-block"
+      animation={`${spin} 1s linear infinite`}
+    >
       <Image
         src="/images/pokemon-ball.png"
         alt="Loading"

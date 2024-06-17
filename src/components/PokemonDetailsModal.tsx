@@ -48,6 +48,7 @@ const PokemonDetailsModal = ({
       <ModalContent bgColor={bgColor} overflow="hidden" width="360px">
         <ModalCloseButton />
         <ModalBody
+          data-testid="pokemon-details-modal"
           display="flex"
           flexDir="column"
           justifyContent="center"
