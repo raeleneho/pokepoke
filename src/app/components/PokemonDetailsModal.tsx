@@ -14,28 +14,48 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import { CustomSpinner } from "./CustomSpinner";
-import { GetPokemonDetailsQuery } from "../generated/graphql";
+import {
+  GetPokemonDetailsDocument,
+  GetPokemonDetailsQuery,
+} from "../../generated/graphql";
+import { useLazyQuery } from "@apollo/client";
+import { useEffect } from "react";
 
 interface PokemonDetailsModalProps {
   bgColor: string;
+  pokemonID: number | null;
   isOpen: boolean;
   onClose: () => void;
-  pokemonDetails: GetPokemonDetailsQuery["pokemon_v2_pokemon"][0] | null;
-  detailsLoading: boolean;
-  pokemonImage: string;
   children?: React.ReactNode;
 }
 
 const PokemonDetailsModal = ({
-  bgColor,
   isOpen,
   onClose,
-  pokemonDetails,
-  pokemonImage,
-  detailsLoading,
+  bgColor,
+  pokemonID,
 }: PokemonDetailsModalProps) => {
+  const [getPokemonDetails, { data, loading, error }] =
+    useLazyQuery<GetPokemonDetailsQuery>(GetPokemonDetailsDocument);
+
+  useEffect(() => {
+    if (pokemonID !== null) {
+      getPokemonDetails({ variables: { id: pokemonID } });
+    }
+  }, [pokemonID, getPokemonDetails]);
+
+  if (loading) {
+    return <CustomSpinner />;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  const pokemonDetails = data?.pokemon_v2_pokemon[0];
   const firstLetter = pokemonDetails?.name?.charAt(0).toUpperCase();
   const remainingName = pokemonDetails?.name?.slice(1);
+  const pokemonImage = pokemonDetails?.pokemon_v2_pokemonsprites[0]?.sprites;
 
   return (
     <Modal
@@ -55,7 +75,7 @@ const PokemonDetailsModal = ({
           alignItems="center"
           p={8}
         >
-          {detailsLoading ? (
+          {loading ? (
             <CustomSpinner />
           ) : (
             <>

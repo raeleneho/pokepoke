@@ -13,9 +13,11 @@ import {
 } from "@chakra-ui/react";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import SplashScreen from "@/components/SplashScreen";
+import SplashScreen from "../components/SplashScreen";
+
+import { useFormDataContext } from "../../context/FormDataContext";
 
 export interface FormValues {
   username: string;
@@ -25,32 +27,23 @@ export interface FormValues {
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { formData, setFormData } = useFormDataContext();
 
   const {
     handleSubmit,
     register,
-    setValue,
     formState: { errors, isSubmitting, isValid },
   } = useForm<FormValues>({
     defaultValues: {
-      username: "",
-      jobTitle: "",
+      username: formData.username,
+      jobTitle: formData.jobTitle,
     },
     mode: "onBlur",
   });
 
-  useEffect(() => {
-    const storedData = localStorage.getItem("formData");
-    if (storedData) {
-      const parsedData: FormValues = JSON.parse(storedData);
-      setValue("username", parsedData.username);
-      setValue("jobTitle", parsedData.jobTitle);
-    }
-  }, [setValue, router]);
-
   const onSubmit = (data: FormValues) => {
     setIsLoading(true);
-    localStorage.setItem("formData", JSON.stringify(data));
+    setFormData(data);
     localStorage.setItem("isLoggedIn", "true");
     // Simulate an async login process
     setTimeout(() => {

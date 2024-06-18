@@ -58755,36 +58755,30 @@ export type Subscription_RootPokemon_V2_Versionname_StreamArgs = {
 export type GetPokemonsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  searchTerm: Scalars['String']['input'];
+  order?: InputMaybe<Order_By>;
 }>;
 
 
 export type GetPokemonsQuery = { __typename?: 'query_root', pokemon_v2_pokemon: Array<{ __typename?: 'pokemon_v2_pokemon', id: number, name: string, pokemon_v2_pokemonsprites: Array<{ __typename?: 'pokemon_v2_pokemonsprites', sprites: any }> }>, pokemon_v2_pokemon_aggregate: { __typename?: 'pokemon_v2_pokemon_aggregate', aggregate?: { __typename?: 'pokemon_v2_pokemon_aggregate_fields', count: number } | null } };
 
 export type GetPokemonDetailsQueryVariables = Exact<{
-  name: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 }>;
 
 
-export type GetPokemonDetailsQuery = { __typename?: 'query_root', pokemon_v2_pokemon: Array<{ __typename?: 'pokemon_v2_pokemon', id: number, name: string, base_experience?: number | null, height?: number | null, weight?: number | null, order?: number | null, pokemon_v2_pokemonsprites: Array<{ __typename?: 'pokemon_v2_pokemonsprites', sprites: any }>, pokemon_v2_pokemonstats: Array<{ __typename?: 'pokemon_v2_pokemonstat', base_stat: number, effort: number, pokemon_v2_stat?: { __typename?: 'pokemon_v2_stat', name: string } | null }>, pokemon_v2_pokemontypes: Array<{ __typename?: 'pokemon_v2_pokemontype', pokemon_v2_type?: { __typename?: 'pokemon_v2_type', name: string } | null }>, pokemon_v2_pokemonabilities: Array<{ __typename?: 'pokemon_v2_pokemonability', pokemon_v2_ability?: { __typename?: 'pokemon_v2_ability', name: string } | null }>, pokemon_v2_pokemonforms: Array<{ __typename?: 'pokemon_v2_pokemonform', name: string }>, pokemon_v2_pokemonmoves: Array<{ __typename?: 'pokemon_v2_pokemonmove', pokemon_v2_move?: { __typename?: 'pokemon_v2_move', name: string } | null }> }> };
+export type GetPokemonDetailsQuery = { __typename?: 'query_root', pokemon_v2_pokemon: Array<{ __typename?: 'pokemon_v2_pokemon', id: number, name: string, base_experience?: number | null, height?: number | null, weight?: number | null, order?: number | null, pokemon_v2_pokemonsprites: Array<{ __typename?: 'pokemon_v2_pokemonsprites', sprites: any }>, pokemon_v2_pokemonstats: Array<{ __typename?: 'pokemon_v2_pokemonstat', base_stat: number, effort: number, pokemon_v2_stat?: { __typename?: 'pokemon_v2_stat', name: string } | null }>, pokemon_v2_pokemontypes: Array<{ __typename?: 'pokemon_v2_pokemontype', pokemon_v2_type?: { __typename?: 'pokemon_v2_type', name: string } | null }>, pokemon_v2_pokemonabilities: Array<{ __typename?: 'pokemon_v2_pokemonability', pokemon_v2_ability?: { __typename?: 'pokemon_v2_ability', name: string } | null }> }> };
 
 
 export const GetPokemonsDocument = gql`
-    query GetPokemons($limit: Int, $offset: Int, $searchTerm: String!) {
-  pokemon_v2_pokemon(
-    limit: $limit
-    offset: $offset
-    where: {name: {_iregex: $searchTerm}, id: {_lte: 151}}
-  ) {
+    query GetPokemons($limit: Int, $offset: Int, $order: order_by = asc) {
+  pokemon_v2_pokemon(limit: $limit, offset: $offset, order_by: {name: $order}) {
     id
     name
     pokemon_v2_pokemonsprites {
-      sprites
+      sprites(path: "other.official-artwork.front_default")
     }
   }
-  pokemon_v2_pokemon_aggregate(
-    where: {name: {_iregex: $searchTerm}, id: {_lte: 151}}
-  ) {
+  pokemon_v2_pokemon_aggregate {
     aggregate {
       count
     }
@@ -58806,11 +58800,11 @@ export const GetPokemonsDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
- *      searchTerm: // value for 'searchTerm'
+ *      order: // value for 'order'
  *   },
  * });
  */
-export function useGetPokemonsQuery(baseOptions: Apollo.QueryHookOptions<GetPokemonsQuery, GetPokemonsQueryVariables> & ({ variables: GetPokemonsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetPokemonsQuery(baseOptions?: Apollo.QueryHookOptions<GetPokemonsQuery, GetPokemonsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetPokemonsQuery, GetPokemonsQueryVariables>(GetPokemonsDocument, options);
       }
@@ -58827,8 +58821,8 @@ export type GetPokemonsLazyQueryHookResult = ReturnType<typeof useGetPokemonsLaz
 export type GetPokemonsSuspenseQueryHookResult = ReturnType<typeof useGetPokemonsSuspenseQuery>;
 export type GetPokemonsQueryResult = Apollo.QueryResult<GetPokemonsQuery, GetPokemonsQueryVariables>;
 export const GetPokemonDetailsDocument = gql`
-    query GetPokemonDetails($name: String!) {
-  pokemon_v2_pokemon(where: {name: {_eq: $name}}) {
+    query GetPokemonDetails($id: Int!) {
+  pokemon_v2_pokemon(where: {id: {_eq: $id}}) {
     id
     name
     base_experience
@@ -58836,7 +58830,7 @@ export const GetPokemonDetailsDocument = gql`
     weight
     order
     pokemon_v2_pokemonsprites {
-      sprites
+      sprites(path: "other.official-artwork.front_default")
     }
     pokemon_v2_pokemonstats {
       base_stat
@@ -58852,14 +58846,6 @@ export const GetPokemonDetailsDocument = gql`
     }
     pokemon_v2_pokemonabilities {
       pokemon_v2_ability {
-        name
-      }
-    }
-    pokemon_v2_pokemonforms {
-      name
-    }
-    pokemon_v2_pokemonmoves {
-      pokemon_v2_move {
         name
       }
     }
@@ -58879,7 +58865,7 @@ export const GetPokemonDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useGetPokemonDetailsQuery({
  *   variables: {
- *      name: // value for 'name'
+ *      id: // value for 'id'
  *   },
  * });
  */

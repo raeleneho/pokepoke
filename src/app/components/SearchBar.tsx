@@ -1,15 +1,21 @@
-import { InputGroup, InputLeftElement, Input } from "@chakra-ui/react";
+import {
+  InputGroup,
+  InputLeftElement,
+  Input,
+  InputRightElement,
+  Button,
+} from "@chakra-ui/react";
 import { IoSearch } from "react-icons/io5";
-import { useSearchContext } from "./SearchContext";
+import { useAppContext } from "../../context/AppContext";
 import { useRouter } from "next/navigation";
 
 const SearchBar = () => {
   const router = useRouter();
-  const { searchTerm, setSearchTerm } = useSearchContext();
+  const { searchTerm, setSearchTerm } = useAppContext();
 
-  const triggerSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && searchTerm.trim() !== "") {
-      router.replace(`home?page=1&search=${searchTerm}`);
+  const triggerSearch = () => {
+    if (searchTerm.trim() !== "") {
+      router.push(`home?page=1&search=${searchTerm}`);
       setSearchTerm("");
     }
   };
@@ -29,9 +35,13 @@ const SearchBar = () => {
           placeholder="Search Pokémon"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={triggerSearch}
           rounded="full"
         />
+        <InputRightElement width="min-content" mr={1}>
+          <Button rounded="full" size="sm" onClick={triggerSearch}>
+            search
+          </Button>
+        </InputRightElement>
       </InputGroup>
     </>
   );

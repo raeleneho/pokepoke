@@ -2,7 +2,9 @@
 
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { ApolloWrapper } from "../lib/apollo-wrapper";
-import { SearchContextProvider } from "@/components/SearchContext";
+import { AppContextProvider } from "../context/AppContext";
+import useAuth from "./hooks/useAuth";
+import { FormDataProvider } from "../context/FormDataContext";
 
 export const theme = extendTheme({
   colors: {
@@ -28,10 +30,13 @@ export const theme = extendTheme({
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  useAuth();
   return (
     <ApolloWrapper>
       <ChakraProvider theme={theme}>
-        <SearchContextProvider>{children}</SearchContextProvider>
+        <AppContextProvider>
+          <FormDataProvider>{children}</FormDataProvider>
+        </AppContextProvider>
       </ChakraProvider>
     </ApolloWrapper>
   );

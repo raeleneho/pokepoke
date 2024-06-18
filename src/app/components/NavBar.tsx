@@ -1,26 +1,25 @@
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import {
   Box,
   Button,
   Flex,
   IconButton,
-  LinkBox,
-  LinkOverlay,
   Text,
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
 import { IoSearch, IoPersonCircle } from "react-icons/io5";
 import SearchBar from "./SearchBar";
 import SearchModal from "./SearchModal";
+import { useFormDataContext } from "../../context/FormDataContext";
 
 interface NavbarProps {
   displaySearch?: boolean;
 }
 
 const Navbar = ({ displaySearch }: NavbarProps) => {
-  const [username, setUsername] = useState("");
+  const { formData } = useFormDataContext();
   const router = useRouter();
   const isTablet = useBreakpointValue({ base: true, md: false });
   const {
@@ -29,34 +28,21 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
     onClose: onSearchModalClose,
   } = useDisclosure();
 
-  useEffect(() => {
-    const storedData = localStorage.getItem("formData");
-    if (storedData) {
-      const formData = JSON.parse(storedData);
-      const username = formData.username;
-      setUsername(username);
-    } else {
-      console.log("No username found in localStorage");
-    }
-  }, []);
   return (
     <>
       <Flex justify="space-between" align="center">
         <Flex justify="flex-start" align="center" gap={4}>
-          <LinkBox>
-            <LinkOverlay href="/home">
-              <Text
-                as="h1"
-                fontWeight={900}
-                color="brand.blue.900"
-                fontStyle="italic"
-                fontSize={{ md: "2xl" }}
-                cursor="pointer"
-              >
-                POKÉSAURUS
-              </Text>
-            </LinkOverlay>
-          </LinkBox>
+          <Text
+            as="h1"
+            fontWeight={900}
+            color="brand.blue.900"
+            fontStyle="italic"
+            fontSize={{ md: "2xl" }}
+            cursor="pointer"
+            onClick={() => router.push("/home")}
+          >
+            POKÉSAURUS
+          </Text>
           <Text
             fontWeight={440}
             color="brand.blue.500"
@@ -66,7 +52,6 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
             Your ultimate Pokémon pocketbook.
           </Text>
         </Flex>
-
         {isTablet ? (
           <Flex align="center" gap={2}>
             {displaySearch && (
@@ -87,9 +72,8 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
                 fontSize="26px"
                 bgColor="brand.yellow"
                 color="brand.blue.900"
-                name={username}
                 onClick={() => router.push("/profile")}
-                aria-label={`Profile of ${username}`}
+                aria-label={`Profile of ${formData.username}`}
               />
             </Box>
           </Flex>
@@ -101,9 +85,9 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
               bgColor="brand.secondary.yellow"
               rounded="full"
               onClick={() => router.push("/profile")}
-              aria-label={`Profile of ${username}`}
+              aria-label={`Profile of ${formData.username}`}
             >
-              <Text color="brand.blue.500">Hello, {username}</Text>
+              <Text color="brand.blue.500">Hello, {formData.username}</Text>
             </Button>
           </Flex>
         )}

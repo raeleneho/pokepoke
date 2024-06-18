@@ -2,7 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
-import { GetPokemonsQuery } from "../generated/graphql";
+import { GetPokemonsQuery } from "../../generated/graphql";
 
 interface PokemonCardProps {
   pokemon: GetPokemonsQuery["pokemon_v2_pokemon"][0];
@@ -32,9 +32,7 @@ const PokemonCard = ({
   const firstLetter = pokemon.name.charAt(0).toUpperCase();
   const remainingName = pokemon.name.slice(1);
 
-  const artworkUrl =
-    pokemon.pokemon_v2_pokemonsprites[0]?.sprites.other["official-artwork"]
-      .front_default;
+  const imageUrl = pokemon.pokemon_v2_pokemonsprites[0].sprites;
 
   return (
     <MotionBox
@@ -60,10 +58,16 @@ const PokemonCard = ({
         left="50%"
         transform="translate(-50%, -40%)"
         zIndex="1"
-        animate={selected === artworkUrl ? bounceAnimation : {}}
+        animate={selected === imageUrl ? bounceAnimation : {}}
       >
-        {artworkUrl && (
-          <Image src={artworkUrl} alt={pokemon.name} width={180} height={180} />
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            alt={pokemon.name}
+            width={180}
+            height={180}
+            data-testid="pokemon-image"
+          />
         )}
       </MotionBox>
       <Box textAlign="center" mt={2} position="relative" zIndex={0}>

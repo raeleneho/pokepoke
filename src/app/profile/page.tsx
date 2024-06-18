@@ -10,58 +10,44 @@ import {
   FormLabel,
   Box,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FormValues } from "../login/page";
 import { useRouter } from "next/navigation";
-import NavBar from "@/components/NavBar";
+import NavBar from "../components/NavBar";
+
+import { useFormDataContext } from "../../context/FormDataContext";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-
+  const [buttonText, setButtonText] = useState("Save changes");
   const router = useRouter();
+  const { formData, setFormData } = useFormDataContext();
   const {
     handleSubmit,
     register,
     setValue,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting, isValid, isDirty },
   } = useForm<FormValues>({
     defaultValues: {
-      username: "",
-      jobTitle: "",
+      username: formData.username,
+      jobTitle: formData.jobTitle,
     },
   });
 
-  useEffect(() => {
-    const storedData = localStorage.getItem("formData");
-    if (storedData) {
-      const parsedData: FormValues = JSON.parse(storedData);
-      setValue("username", parsedData.username);
-      setValue("jobTitle", parsedData.jobTitle);
-    }
-  }, [setValue]);
-
-  useEffect(() => {
-    if (isSubmitting && isValid) {
-      setIsSaved(true);
-      const timeout = setTimeout(() => setIsSaved(false), 3000);
-      return () => clearTimeout(timeout);
-    }
-  }, [isSubmitting, isValid]);
-
   const onSubmit = (data: FormValues) => {
     setIsLoading(true);
-    localStorage.setItem("formData", JSON.stringify(data));
+    setFormData(data);
 
+    setButtonText("Changes Saved");
     setIsLoading(false);
+    setTimeout(() => setButtonText("Save changes"), 3000);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("formData");
     localStorage.removeItem("isLoggedIn");
-    setValue("username", "");
-    setValue("jobTitle", "");
+    setFormData({ username: "", jobTitle: "" });
 
     router.replace("/login");
   };
@@ -146,7 +132,7 @@ export default function Page() {
               bgColor={isValid ? "teal" : "gray"}
               isDisabled={isSubmitting || !isValid}
             >
-              {isSaved ? "Changes Saved" : "Save changes"}
+              {buttonText}
             </Button>
           </Flex>
         </VStack>

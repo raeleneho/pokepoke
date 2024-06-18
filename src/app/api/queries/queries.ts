@@ -1,19 +1,27 @@
 import { gql } from "@apollo/client";
 
 export const GET_POKEMONS = gql`
-  query GetPokemons($limit: Int, $offset: Int, $searchTerm: String!) {
+  query GetPokemons(
+    $limit: Int
+    $offset: Int
+    $searchTerm: String
+    $order: order_by
+  ) {
     pokemon_v2_pokemon(
       limit: $limit
       offset: $offset
       where: { name: { _iregex: $searchTerm } }
+      order_by: $order ? { name: $order } : []
     ) {
       id
       name
       pokemon_v2_pokemonsprites {
-        sprites
+        sprites(path: "other.official-artwork.front_default")
       }
     }
-    pokemon_v2_pokemon_aggregate(where: { name: { _iregex: $searchTerm } }) {
+    pokemon_v2_pokemon_aggregate(
+      where: { name: { _iregex: $searchTerm } }
+    ) {
       aggregate {
         count
       }
@@ -22,18 +30,16 @@ export const GET_POKEMONS = gql`
 `;
 
 export const GET_POKEMON_DETAILS = gql`
-  query GetPokemonDetails($name: String!) {
-    pokemon_v2_pokemon(where: { name: { _eq: $name } }) {
+  query GetPokemonDetails($id: Int!) {
+    pokemon_v2_pokemon(where: { id: { _eq: $id } }) {
       id
       name
       base_experience
       height
       weight
-      is_default
-      location_area_encounters
       order
       pokemon_v2_pokemonsprites {
-        sprites
+        sprites(path: "other.official-artwork.front_default")
       }
       pokemon_v2_pokemonstats {
         base_stat
@@ -49,14 +55,6 @@ export const GET_POKEMON_DETAILS = gql`
       }
       pokemon_v2_pokemonabilities {
         pokemon_v2_ability {
-          name
-        }
-      }
-      pokemon_v2_pokemonforms {
-        name
-      }
-      pokemon_v2_pokemonmoves {
-        pokemon_v2_move {
           name
         }
       }
