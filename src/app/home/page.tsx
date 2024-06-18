@@ -103,7 +103,7 @@ export default function Home() {
     <Box position="relative" height="100vh" padding={8}>
       <Navbar displaySearch />
       <main>
-        <Flex justifyContent="flex-end" pt={6}>
+        <Flex justifyContent="flex-start" pt={6}>
           <Menu>
             <MenuButton
               as={Button}
