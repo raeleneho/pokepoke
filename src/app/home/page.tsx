@@ -103,7 +103,7 @@ export default function Home() {
     <Box position="relative" height="100vh" padding={8}>
       <Navbar displaySearch />
       <main>
-        <Flex justifyContent="flex-end" mb={4}>
+        <Flex justifyContent="flex-end" pt={6}>
           <Menu>
             <MenuButton
               as={Button}
@@ -124,7 +124,7 @@ export default function Home() {
             </MenuList>
           </Menu>
         </Flex>
-        <Flex flexWrap="wrap" justifyContent="center" py={8}>
+        <Flex flexWrap="wrap" justifyContent="center" py={6}>
           {paginatedLoading && <SplashScreen />}
           {!paginatedLoading &&
             filteredData.map((pokemon, index) => {
@@ -150,7 +150,7 @@ export default function Home() {
               );
             })}
         </Flex>
-        <Flex justifyContent="center" align="center" mt="4" gap={4}>
+        <Flex justifyContent="center" align="center" gap={4}>
           <IconButton
             icon={<RiArrowLeftSLine />}
             aria-label="Previous Page"
