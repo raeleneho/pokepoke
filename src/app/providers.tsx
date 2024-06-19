@@ -39,7 +39,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ChakraProvider theme={theme}>
         <UserContextDataProvider>
           <SearchContextProvider>
-            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+            <Suspense fallback={<SplashScreen />}>{children}</Suspense>
           </SearchContextProvider>
         </UserContextDataProvider>
       </ChakraProvider>
