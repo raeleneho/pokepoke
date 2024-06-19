@@ -27,7 +27,7 @@ export default function Page() {
     handleSubmit,
     register,
     setValue,
-    formState: { errors, isSubmitting, isValid, isDirty },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<FormValues>({
     defaultValues: {
       username: userContextData.username,
@@ -116,6 +116,8 @@ export default function Page() {
               </FormErrorMessage>
             </FormControl>
           </Box>
+
+          {/* Logout */}
 
           <Flex justify="space-between" width="100%">
             <Button

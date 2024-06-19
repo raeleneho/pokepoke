@@ -25,6 +25,7 @@ export const useUserContext = () => {
 export const UserContextDataProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
+  // initalise the user context data with the data from local storage
   const [userContextData, setUserContextData] =
     useLocalStorage<UserContextData>("userContextData", {
       username: "",

@@ -120,7 +120,6 @@ export default function Page() {
                 </Text>
               </Flex>
             </Flex>
-
             <FormControl isInvalid={!!errors.username}>
               <Input
                 variant="flushed"
@@ -157,7 +156,6 @@ export default function Page() {
                 {errors.jobTitle && errors.jobTitle.message}
               </FormErrorMessage>
             </FormControl>
-
             <Button
               rightIcon={
                 <Image
