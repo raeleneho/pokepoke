@@ -90,99 +90,97 @@ export default function Home() {
   }
 
   return (
-    <Suspense fallback={<SplashScreen />}>
-      <Box position="relative" height="100vh" padding={8}>
-        <Navbar displaySearch />
-        <main>
-          <Flex justifyContent="flex-start" pt={8}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<FiChevronDown />}
-                variant="outline"
-              >
-                Sort by
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => handleSort("asc")}>
-                  <BsSortAlphaUp size="24px" />
-                  <Text ml={2}>Alphabetical Asc.</Text>
-                </MenuItem>
-                <MenuItem onClick={() => handleSort("desc")}>
-                  <BsSortAlphaDown size="24px" />
-                  <Text ml={2}>Alphabetical Desc.</Text>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
-          <Flex flexWrap="wrap" justifyContent="center" py={6}>
-            {paginatedLoading &&
-              Array.from({ length: itemsPerPage }).map((_, index) => (
-                <Box
-                  key={index}
-                  padding="6"
-                  boxShadow="lg"
-                  bgColor="gray.100"
-                  width="240px"
-                  height="400px"
-                />
-              ))}
-            {!paginatedLoading && pokemons.length === 0 && (
-              <Text color="brand.blue.900">
-                Sorry, we can&apos;t find the Pokémon you are looking for. :(
-              </Text>
-            )}
-            {pokemons.map((pokemon, index) => {
-              const bgColor =
-                theme.colors.brand.secondary[colors[index % colors.length]];
-              const imageUrl = pokemon.pokemon_v2_pokemonsprites[0].sprites;
+    <Box position="relative" height="100vh" padding={8}>
+      <Navbar displaySearch />
+      <main>
+        <Flex justifyContent="flex-start" pt={8}>
+          <Menu>
+            <MenuButton
+              as={Button}
+              rightIcon={<FiChevronDown />}
+              variant="outline"
+            >
+              Sort by
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={() => handleSort("asc")}>
+                <BsSortAlphaUp size="24px" />
+                <Text ml={2}>Alphabetical Asc.</Text>
+              </MenuItem>
+              <MenuItem onClick={() => handleSort("desc")}>
+                <BsSortAlphaDown size="24px" />
+                <Text ml={2}>Alphabetical Desc.</Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+        <Flex flexWrap="wrap" justifyContent="center" py={6}>
+          {paginatedLoading &&
+            Array.from({ length: itemsPerPage }).map((_, index) => (
+              <Box
+                key={index}
+                padding="6"
+                boxShadow="lg"
+                bgColor="gray.100"
+                width="240px"
+                height="400px"
+              />
+            ))}
+          {!paginatedLoading && pokemons.length === 0 && (
+            <Text color="brand.blue.900">
+              Sorry, we can&apos;t find the Pokémon you are looking for. :(
+            </Text>
+          )}
+          {pokemons.map((pokemon, index) => {
+            const bgColor =
+              theme.colors.brand.secondary[colors[index % colors.length]];
+            const imageUrl = pokemon.pokemon_v2_pokemonsprites[0].sprites;
 
-              const selectCard = () => {
-                setClickedImage(imageUrl);
-                setSelectedBgColor(bgColor);
-                setSelectedPokemonID(pokemon.id);
-                onProfileModalOpen();
-              };
+            const selectCard = () => {
+              setClickedImage(imageUrl);
+              setSelectedBgColor(bgColor);
+              setSelectedPokemonID(pokemon.id);
+              onProfileModalOpen();
+            };
 
-              return (
-                <PokemonCard
-                  key={pokemon.id}
-                  pokemon={pokemon}
-                  bgColor={bgColor}
-                  onClick={selectCard}
-                  selected={clickedImage}
-                  loading={paginatedLoading}
-                />
-              );
-            })}
-          </Flex>
-          <Flex justifyContent="center" align="center" gap={4}>
-            <IconButton
-              icon={<RiArrowLeftSLine />}
-              aria-label="Previous Page"
-              onClick={() => navigatePage(page - 1)}
-              isDisabled={page === 1}
-            />
-            <Box>
-              {!paginatedLoading && pokemons.length === 0
-                ? 0
-                : `${page} of ${totalPages}`}
-            </Box>
-            <IconButton
-              icon={<RiArrowRightSLine />}
-              aria-label="Next Page"
-              onClick={() => navigatePage(page + 1)}
-              isDisabled={page >= totalPages}
-            />
-          </Flex>
-        </main>
-        <PokemonDetailsModal
-          isOpen={isProfileModalOpen}
-          bgColor={selectedBgColor}
-          onClose={onProfileModalClose}
-          pokemonID={selectedPokemonID}
-        />
-      </Box>
-    </Suspense>
+            return (
+              <PokemonCard
+                key={pokemon.id}
+                pokemon={pokemon}
+                bgColor={bgColor}
+                onClick={selectCard}
+                selected={clickedImage}
+                loading={paginatedLoading}
+              />
+            );
+          })}
+        </Flex>
+        <Flex justifyContent="center" align="center" gap={4}>
+          <IconButton
+            icon={<RiArrowLeftSLine />}
+            aria-label="Previous Page"
+            onClick={() => navigatePage(page - 1)}
+            isDisabled={page === 1}
+          />
+          <Box>
+            {!paginatedLoading && pokemons.length === 0
+              ? 0
+              : `${page} of ${totalPages}`}
+          </Box>
+          <IconButton
+            icon={<RiArrowRightSLine />}
+            aria-label="Next Page"
+            onClick={() => navigatePage(page + 1)}
+            isDisabled={page >= totalPages}
+          />
+        </Flex>
+      </main>
+      <PokemonDetailsModal
+        isOpen={isProfileModalOpen}
+        bgColor={selectedBgColor}
+        onClose={onProfileModalClose}
+        pokemonID={selectedPokemonID}
+      />
+    </Box>
   );
 }
