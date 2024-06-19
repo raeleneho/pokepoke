@@ -7,6 +7,7 @@ import useAuth from "./hooks/useAuth";
 import { UserContextDataProvider } from "../context/UserContext";
 import { SearchContextProvider } from "src/context/SearchContext";
 import SplashScreen from "./components/SplashScreen";
+import { Suspense } from "react";
 
 export const theme = extendTheme({
   colors: {
@@ -37,7 +38,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ApolloWrapper>
       <ChakraProvider theme={theme}>
         <UserContextDataProvider>
-          <Suspense fallback={<SplashScreen />}>{children}</Suspense>
+          <SearchContextProvider>
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+          </SearchContextProvider>
         </UserContextDataProvider>
       </ChakraProvider>
     </ApolloWrapper>
