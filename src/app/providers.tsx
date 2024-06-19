@@ -38,7 +38,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ApolloWrapper>
       <ChakraProvider theme={theme}>
         <UserContextDataProvider>
-          <SearchContextProvider>{children}</SearchContextProvider>
+          <Suspense fallback={<div>Loading search context...</div>}>
+            <SearchContextProvider>{children}</SearchContextProvider>
+          </Suspense>
         </UserContextDataProvider>
       </ChakraProvider>
     </ApolloWrapper>
