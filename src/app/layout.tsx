@@ -23,13 +23,13 @@ export default function RootLayout({
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/pokemon-ball.png"
+          href="/images/pokemon-ball.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/pokemon-ball.png"
+          href="/images/pokemon-ball.png"
         />
       </head>
       <body className={inter.className}>
