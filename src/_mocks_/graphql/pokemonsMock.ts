@@ -1,10 +1,9 @@
 import {
   GetPokemonsDocument,
   GetPokemonDetailsDocument,
-} from "../../../generated/graphql";
-import { MockedResponse } from "@apollo/client/testing";
+} from "../../generated/graphql";
 
-export const mocks: MockedResponse[] = [
+export const mocks = [
   {
     request: {
       query: GetPokemonsDocument,
@@ -28,11 +27,20 @@ export const mocks: MockedResponse[] = [
               },
             ],
           },
-          // Add more mock Pokémon as needed
+          {
+            id: 2,
+            name: "ivysaur",
+            pokemon_v2_pokemonsprites: [
+              {
+                sprites:
+                  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+              },
+            ],
+          },
         ],
         pokemon_v2_pokemon_aggregate: {
           aggregate: {
-            count: 1,
+            count: 2,
           },
         },
       },
@@ -69,7 +77,6 @@ export const mocks: MockedResponse[] = [
                   name: "hp",
                 },
               },
-              // Add more stats as needed
             ],
             pokemon_v2_pokemontypes: [
               {

@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { registerApolloClient } from "@apollo/experimental-nextjs-app-support";
 
 const httpLink = new HttpLink({
-  uri: "https://beta.pokeapi.co/graphql/v1beta",
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
 });
 
 export const { getClient, query, PreloadQuery } = registerApolloClient(() => {

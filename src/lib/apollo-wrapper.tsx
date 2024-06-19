@@ -11,7 +11,7 @@ import {
 function makeClient() {
   const httpLink = new HttpLink({
     // this needs to be an absolute url, as relative urls cannot be used in SSR
-    uri: "https://beta.pokeapi.co/graphql/v1beta",
+    uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
 
     fetchOptions: { cache: "no-store" },
     // you can override the default `fetchOptions` on a per query basis

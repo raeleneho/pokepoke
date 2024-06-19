@@ -1,9 +1,9 @@
-import { mount } from "cypress/react";
-import ApolloMockedProvider from "src/_mocks_/apollo/MockedProvider";
+// import { mount } from "cypress/react";
+// import ApolloMockedProvider from "src/_mocks_/apollo/MockedProvider";
 
-Cypress.Commands.add("mountWithApollo", (component) => {
-  return mount(<ApolloMockedProvider>{component}</ApolloMockedProvider>);
-});
+// Cypress.Commands.add('mountWithApollo', (component) => {
+//   return mount(<ApolloMockedProvider>{component}</ApolloMockedProvider>);
+// });
 
 // ***********************************************
 // This example commands.ts shows you how to
