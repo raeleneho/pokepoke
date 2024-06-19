@@ -35,9 +35,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ApolloWrapper>
       <ChakraProvider theme={theme}>
-        <SearchContextProvider>
-          <UserContextDataProvider>{children}</UserContextDataProvider>
-        </SearchContextProvider>
+        <UserContextDataProvider>
+          <SearchContextProvider>{children}</SearchContextProvider>
+        </UserContextDataProvider>
       </ChakraProvider>
     </ApolloWrapper>
   );
