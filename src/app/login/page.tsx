@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import SplashScreen from "../components/SplashScreen";
 

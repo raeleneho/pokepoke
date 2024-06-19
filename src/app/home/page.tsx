@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
+import { useState, useMemo } from "react";
 import {
   Box,
   Flex,
@@ -27,7 +27,6 @@ import { useQuery } from "@apollo/client";
 import { FiChevronDown } from "react-icons/fi";
 import { BsSortAlphaDown, BsSortAlphaUp } from "react-icons/bs";
 import { useSearchContext } from "src/context/SearchContext";
-import SplashScreen from "../components/SplashScreen";
 
 export default function Home() {
   const router = useRouter();

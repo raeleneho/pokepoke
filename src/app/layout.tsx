@@ -3,8 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { fonts } from "./fonts";
-import SplashScreen from "./components/SplashScreen";
-import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,9 +34,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         {" "}
-        <Providers>
-          <Suspense fallback={<SplashScreen />}>{children}</Suspense>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
