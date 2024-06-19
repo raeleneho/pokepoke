@@ -16,13 +16,13 @@ import { FormValues } from "../login/page";
 import { useRouter } from "next/navigation";
 import NavBar from "../components/NavBar";
 
-import { useFormDataContext } from "../../context/FormDataContext";
+import { useUserContext } from "../../context/UserContext";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [buttonText, setButtonText] = useState("Save changes");
   const router = useRouter();
-  const { formData, setFormData } = useFormDataContext();
+  const { userContextData, setUserContextData } = useUserContext();
   const {
     handleSubmit,
     register,
@@ -30,14 +30,14 @@ export default function Page() {
     formState: { errors, isSubmitting, isValid, isDirty },
   } = useForm<FormValues>({
     defaultValues: {
-      username: formData.username,
-      jobTitle: formData.jobTitle,
+      username: userContextData.username,
+      jobTitle: userContextData.jobTitle,
     },
   });
 
   const onSubmit = (data: FormValues) => {
     setIsLoading(true);
-    setFormData(data);
+    setUserContextData(data);
 
     setButtonText("Changes Saved");
     setIsLoading(false);
@@ -45,9 +45,9 @@ export default function Page() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("formData");
+    localStorage.removeItem("userContextData");
     localStorage.removeItem("isLoggedIn");
-    setFormData({ username: "", jobTitle: "" });
+    setUserContextData({ username: "", jobTitle: "" });
 
     router.replace("/login");
   };

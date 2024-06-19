@@ -12,14 +12,14 @@ import {
 import { IoSearch, IoPersonCircle } from "react-icons/io5";
 import SearchBar from "./SearchBar";
 import SearchModal from "./SearchModal";
-import { useFormDataContext } from "../../context/FormDataContext";
+import { useUserContext } from "../../context/UserContext";
 
 interface NavbarProps {
   displaySearch?: boolean;
 }
 
 const Navbar = ({ displaySearch }: NavbarProps) => {
-  const { formData } = useFormDataContext();
+  const { userContextData } = useUserContext();
   const router = useRouter();
   const isTablet = useBreakpointValue({ base: true, md: false });
   const {
@@ -73,7 +73,7 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
                 bgColor="brand.yellow"
                 color="brand.blue.900"
                 onClick={() => router.push("/profile")}
-                aria-label={`Profile of ${formData.username}`}
+                aria-label={`Profile of ${userContextData.username}`}
               />
             </Box>
           </Flex>
@@ -85,9 +85,11 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
               bgColor="brand.secondary.yellow"
               rounded="full"
               onClick={() => router.push("/profile")}
-              aria-label={`Profile of ${formData.username}`}
+              aria-label={`Profile of ${userContextData.username}`}
             >
-              <Text color="brand.blue.500">Hello, {formData.username}</Text>
+              <Text color="brand.blue.500">
+                Hello, {userContextData.username}
+              </Text>
             </Button>
           </Flex>
         )}

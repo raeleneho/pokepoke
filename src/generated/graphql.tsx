@@ -58755,6 +58755,7 @@ export type Subscription_RootPokemon_V2_Versionname_StreamArgs = {
 export type GetPokemonsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
   order?: InputMaybe<Order_By>;
 }>;
 
@@ -58770,15 +58771,20 @@ export type GetPokemonDetailsQuery = { __typename?: 'query_root', pokemon_v2_pok
 
 
 export const GetPokemonsDocument = gql`
-    query GetPokemons($limit: Int, $offset: Int, $order: order_by = asc) {
-  pokemon_v2_pokemon(limit: $limit, offset: $offset, order_by: {name: $order}) {
+    query GetPokemons($limit: Int, $offset: Int, $searchTerm: String, $order: order_by) {
+  pokemon_v2_pokemon(
+    limit: $limit
+    offset: $offset
+    where: {name: {_iregex: $searchTerm}}
+    order_by: {name: $order}
+  ) {
     id
     name
     pokemon_v2_pokemonsprites {
       sprites(path: "other.official-artwork.front_default")
     }
   }
-  pokemon_v2_pokemon_aggregate {
+  pokemon_v2_pokemon_aggregate(where: {name: {_iregex: $searchTerm}}) {
     aggregate {
       count
     }
@@ -58800,6 +58806,7 @@ export const GetPokemonsDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      offset: // value for 'offset'
+ *      searchTerm: // value for 'searchTerm'
  *      order: // value for 'order'
  *   },
  * });

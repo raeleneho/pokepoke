@@ -3,34 +3,43 @@ describe("Login Page", () => {
     cy.visit("/login");
   });
 
-  it("displays validation errors when trying to submit an empty form", () => {
-    // Focus and blur each input to trigger validation
-    cy.get('input[placeholder="Username"]').focus().blur();
-    cy.get('input[placeholder="Job Title"]').focus().blur();
-
-    // Check validation errors
-    cy.contains("This is required").should("be.visible");
-    cy.contains("Job title is required").should("be.visible");
+  it("should display the login form with all elements", () => {
+    cy.get('input[name="username"]').should("be.visible");
+    cy.get('input[name="jobTitle"]').should("be.visible");
+    cy.get('button[type="submit"]').should("be.visible");
   });
 
-  it("displays validation errors when input values are too short", () => {
-    cy.get('input[placeholder="Username"]').type("abc").blur();
-    cy.get('input[placeholder="Job Title"]').type("dev").blur();
-
-    // Ensure the button is still disabled
-    cy.get('button[type="submit"]').should("be.disabled");
-
-    // Check validation errors
-    cy.contains("Minimum length should be 4").should("be.visible");
-    cy.contains("Minimum length should be 4").should("be.visible");
-  });
-
-  it("logs in successfully with valid credentials", () => {
-    cy.get('input[placeholder="Username"]').type("testuser");
-    cy.get('input[placeholder="Job Title"]').type("Developer");
+  it("should fill the form and submit successfully", () => {
+    cy.get('input[name="username"]').type("testuser");
+    cy.get('input[name="jobTitle"]').type("developer");
     cy.get('button[type="submit"]').click();
 
-    // Verify successful login
+    // Validate redirection to the home page
     cy.url().should("include", "/home");
+  });
+
+  it("should display error messages for invalid inputs", () => {
+    // Fill the form with invalid data and blur the inputs to trigger validation
+    cy.get('input[name="username"]').type("abc").blur();
+    cy.get('input[name="jobTitle"]').type("xyz").blur();
+
+    // Check that error messages are displayed
+    cy.get('input[name="username"]')
+      .parent()
+      .within(() => {
+        cy.get(".chakra-form__error-message").should(
+          "contain",
+          "Minimum length should be 4"
+        );
+      });
+
+    cy.get('input[name="jobTitle"]')
+      .parent()
+      .within(() => {
+        cy.get(".chakra-form__error-message").should(
+          "contain",
+          "Minimum length should be 4"
+        );
+      });
   });
 });

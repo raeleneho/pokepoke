@@ -21,34 +21,21 @@ import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import PokemonCard from "../components/PokemonCard";
 import SplashScreen from "../components/SplashScreen";
 import Navbar from "../components/NavBar";
-import { useAppContext } from "../../context/AppContext";
 
 import { GetPokemonsDocument, GetPokemonsQuery } from "../../generated/graphql";
 import { useQuery } from "@apollo/client";
 
 import { FiChevronDown } from "react-icons/fi";
 import { BsSortAlphaDown, BsSortAlphaUp } from "react-icons/bs";
-
-const ITEMS_PER_PAGE = 14;
+import { useSearchContext } from "src/context/SearchContext";
 
 export default function Home() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const page = parseInt(searchParams.get("page") || "1", 10);
 
-  const sortOrder = searchParams.get("sortOrder");
-  const offset = (page - 1) * ITEMS_PER_PAGE;
-
-  const { searchTerm } = useAppContext();
   const theme = useTheme();
   const colors = Object.keys(theme.colors.brand.secondary);
-
-  useEffect(() => {
-    const query = `home?page=${page}&search=${searchTerm}&sortOrder=${
-      sortOrder || "asc"
-    }`;
-    router.push(query);
-  }, [searchTerm, sortOrder, page, router]);
+  const { searchTerm, sortOrder, page, offset, itemsPerPage } =
+    useSearchContext();
 
   const {
     loading: paginatedLoading,
@@ -56,10 +43,10 @@ export default function Home() {
     data: paginatedData,
   } = useQuery<GetPokemonsQuery>(GetPokemonsDocument, {
     variables: {
-      limit: ITEMS_PER_PAGE,
+      limit: itemsPerPage,
       offset,
-      searchTerm: searchTerm || null,
-      order: sortOrder || "asc",
+      searchTerm: searchTerm || "",
+      order: sortOrder || undefined,
     },
   });
 
@@ -83,27 +70,30 @@ export default function Home() {
     if (newPage < 1 || newPage > totalPages) {
       return;
     }
-    const queryString = `home?page=${newPage}&search=${searchTerm}&sortOrder=${sortOrder}`;
+    const queryString = `home?page=${newPage}${
+      searchTerm ? "&search=" + searchTerm : ""
+    }${sortOrder ? "&sortOrder=" + sortOrder : ""}`;
     router.push(queryString);
   };
 
-  const filteredData = useMemo(() => {
+  const pokemons = useMemo(() => {
     return paginatedData?.pokemon_v2_pokemon ?? [];
   }, [paginatedData]);
 
   const totalPages = Math.ceil(
     (paginatedData?.pokemon_v2_pokemon_aggregate?.aggregate?.count || 0) /
-      ITEMS_PER_PAGE
+      itemsPerPage
   );
 
-  if (paginatedLoading) return <SplashScreen />;
-  if (paginatedError) return <p>Error: {paginatedError?.message}</p>;
+  if (paginatedError) {
+    return <p>Error: {paginatedError.message}</p>;
+  }
 
   return (
     <Box position="relative" height="100vh" padding={8}>
       <Navbar displaySearch />
       <main>
-        <Flex justifyContent="flex-start" pt={6}>
+        <Flex justifyContent="flex-start" pt={8}>
           <Menu>
             <MenuButton
               as={Button}
@@ -125,30 +115,45 @@ export default function Home() {
           </Menu>
         </Flex>
         <Flex flexWrap="wrap" justifyContent="center" py={6}>
-          {paginatedLoading && <SplashScreen />}
-          {!paginatedLoading &&
-            filteredData.map((pokemon, index) => {
-              const bgColor =
-                theme.colors.brand.secondary[colors[index % colors.length]];
-              const imageUrl = pokemon.pokemon_v2_pokemonsprites[0].sprites;
+          {paginatedLoading &&
+            Array.from({ length: itemsPerPage }).map((_, index) => (
+              <Box
+                key={index}
+                padding="6"
+                boxShadow="lg"
+                bgColor="gray.100"
+                width="240px"
+                height="400px"
+              />
+            ))}
+          {!paginatedLoading && pokemons.length === 0 && (
+            <Text color="brand.blue.900">
+              Sorry, we can&apos;t find the Pokémon you are looking for. :(
+            </Text>
+          )}
+          {pokemons.map((pokemon, index) => {
+            const bgColor =
+              theme.colors.brand.secondary[colors[index % colors.length]];
+            const imageUrl = pokemon.pokemon_v2_pokemonsprites[0].sprites;
 
-              const selectCard = () => {
-                setClickedImage(imageUrl);
-                setSelectedBgColor(bgColor);
-                setSelectedPokemonID(pokemon.id);
-                onProfileModalOpen();
-              };
+            const selectCard = () => {
+              setClickedImage(imageUrl);
+              setSelectedBgColor(bgColor);
+              setSelectedPokemonID(pokemon.id);
+              onProfileModalOpen();
+            };
 
-              return (
-                <PokemonCard
-                  key={pokemon.id}
-                  pokemon={pokemon}
-                  bgColor={bgColor}
-                  onClick={selectCard}
-                  selected={clickedImage}
-                />
-              );
-            })}
+            return (
+              <PokemonCard
+                key={pokemon.id}
+                pokemon={pokemon}
+                bgColor={bgColor}
+                onClick={selectCard}
+                selected={clickedImage}
+                loading={paginatedLoading}
+              />
+            );
+          })}
         </Flex>
         <Flex justifyContent="center" align="center" gap={4}>
           <IconButton
@@ -158,7 +163,9 @@ export default function Home() {
             isDisabled={page === 1}
           />
           <Box>
-            {page} of {totalPages}
+            {!paginatedLoading && pokemons.length === 0
+              ? 0
+              : `${page} of ${totalPages}`}
           </Box>
           <IconButton
             icon={<RiArrowRightSLine />}

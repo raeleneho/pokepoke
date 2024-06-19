@@ -9,6 +9,7 @@ interface PokemonCardProps {
   bgColor: string;
   selected?: string;
   onClick: () => void;
+  loading?: boolean;
 }
 
 const MotionBox = motion(Box);
@@ -28,6 +29,7 @@ const PokemonCard = ({
   bgColor,
   onClick,
   selected,
+  loading = false,
 }: PokemonCardProps) => {
   const firstLetter = pokemon.name.charAt(0).toUpperCase();
   const remainingName = pokemon.name.slice(1);

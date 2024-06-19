@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Pokésaurus
 
-## Getting Started
+## Project Overview
 
-First, run the development server:
+The Pokésaurus is a frontend application built for a coding challenge for the Leonardo Ai Frontend role. The application provides a comprehensive Pokémon pocketbook, allowing users to search, view, and interact with detailed information about various Pokémon. The project leverages modern web technologies and best practices to deliver a responsive and user-friendly experience.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Tech Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Framework**: Next.js
+- **State Management**: React Context API
+- **Styling**: Chakra UI
+- **GraphQL Client**: Apollo Client
+- **Testing**: Cypress (e2e), @apollo/client/testing (mocked API)
+- **Form Handling**: React Hook Form
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The project follows a modular structure to ensure scalability and maintainability
 
-## Learn More
+## Installation Instructions
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone the repository:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   git clone https://github.com/your-username/pokepoke-challenge.git
+   cd pokepoke-challenge
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+2. Install the dependencies:
 
-## Deploy on Vercel
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Run the development server:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
+
+## Testing Approach
+
+### End-to-End Testing
+
+Cypress is used for end-to-end testing. Cypress tests can be found in the `cypress/e2e` directory. The tests cover user interactions and critical workflows to ensure the application works as expected.
+
+### Mocked API
+
+The project uses @apollo/client/testing for mocking GraphQL API requests. Mock data and API configuration can be found in the `src/app/_mocks_` directory. This allows for testing components in isolation and ensuring they work correctly with the GraphQL queries.
+
+## Further Potential Improvements
+
+If more time was allowed, the following improvements could be made:
+
+- 404 Page: Implement a custom 404 page to improve user experience.
+- Enhanced Pokémon Details: Add tabs to the Pokémon details modal for more detailed information.
+- Save Function: Implement a save function to bookmark favorite Pokémon.
+- Logout Confirmation: Add a pop-up modal to confirm the logout action.
+- Autocomplete Search: Enhance the search functionality with autocomplete suggestions.
+- Filter by Type: Add functionality to filter Pokémon by type.

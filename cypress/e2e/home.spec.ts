@@ -1,32 +1,59 @@
-describe("Home Page", () => {
-  beforeEach(() => {
-    cy.visit("/home");
+import { mount } from "cypress/react";
+import { mocks } from "src/_mocks_/graphql";
+import { MockedProvider } from "@apollo/client/testing";
+
+describe("Homepage", () => {
+  it("displays loading state initially", () => {
+    mount(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Home />
+      </MockedProvider>
+    );
+    cy.get('[data-testid="loading-spinner"]').should("exist");
   });
 
-  it("should navigate to the next and previous pages", () => {
-    cy.get('[aria-label="Next Page"]').click();
-    cy.get('[aria-label="Previous Page"]').click();
+  it("displays the pokemon cards", () => {
+    mount(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <Home />
+      </MockedProvider>
+    );
+    cy.get('[data-testid="pokemon-card"]').should("have.length", 1);
   });
 
-  it("should open the Pokemon details modal when a card is clicked", () => {
-    cy.get('[data-testid="pokemon-card"]').first().click();
-    cy.wait(1000);
-    cy.get('[data-testid="pokemon-details-modal"]').should("be.visible");
-  });
-});
+  it("displays a message when no pokemon found", () => {
+    const emptyMocks = [
+      {
+        request: {
+          query: GET_POKEMONS,
+          variables: {
+            limit: 14,
+            offset: 0,
+            searchTerm: "unknown",
+            order: "asc",
+          },
+        },
+        result: {
+          data: {
+            pokemon_v2_pokemon: [],
+            pokemon_v2_pokemon_aggregate: {
+              aggregate: {
+                count: 0,
+              },
+            },
+          },
+        },
+      },
+    ];
 
-describe("Search Functionality", () => {
-  beforeEach(() => {
-    cy.visit("/home");
-  });
-
-  it("should update search term and display results", () => {
-    const searchTerm = "Pikachu"; // Example search term
-
-    // Enter the search term in the input field and press Enter
-    cy.get('[data-testid="search-input"]').type(`${searchTerm}{enter}`);
-
-    // Check if the search results are displayed by searching for the Pokemon card title
-    cy.contains(searchTerm).should("exist");
+    mount(
+      <MockedProvider mocks={emptyMocks} addTypename={false}>
+        <Home />
+      </MockedProvider>
+    );
+    cy.get('[data-testid="no-pokemon-message"]').should(
+      "contain.text",
+      "Sorry, we couldn't find any Pokémon matching your search."
+    );
   });
 });

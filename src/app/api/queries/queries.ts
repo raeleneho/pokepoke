@@ -11,7 +11,7 @@ export const GET_POKEMONS = gql`
       limit: $limit
       offset: $offset
       where: { name: { _iregex: $searchTerm } }
-      order_by: $order ? { name: $order } : []
+      order_by: { name: $order }
     ) {
       id
       name
@@ -19,16 +19,13 @@ export const GET_POKEMONS = gql`
         sprites(path: "other.official-artwork.front_default")
       }
     }
-    pokemon_v2_pokemon_aggregate(
-      where: { name: { _iregex: $searchTerm } }
-    ) {
+    pokemon_v2_pokemon_aggregate(where: { name: { _iregex: $searchTerm } }) {
       aggregate {
         count
       }
     }
   }
 `;
-
 export const GET_POKEMON_DETAILS = gql`
   query GetPokemonDetails($id: Int!) {
     pokemon_v2_pokemon(where: { id: { _eq: $id } }) {

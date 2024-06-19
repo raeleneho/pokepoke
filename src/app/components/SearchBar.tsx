@@ -6,20 +6,21 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { IoSearch } from "react-icons/io5";
-import { useAppContext } from "../../context/AppContext";
+import { useSearchContext } from "../../context/SearchContext";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const SearchBar = () => {
   const router = useRouter();
-  const { searchTerm, setSearchTerm } = useAppContext();
+  const { searchTerm, setSearchTerm } = useSearchContext();
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
   const triggerSearch = () => {
-    if (searchTerm.trim() !== "") {
-      router.push(`home?page=1&search=${searchTerm}`);
-      setSearchTerm("");
+    if (localSearchTerm.trim() !== "") {
+      setSearchTerm(localSearchTerm);
+      router.push(`home?page=1&search=${localSearchTerm}`);
     }
   };
-
   return (
     <>
       <InputGroup
@@ -33,8 +34,9 @@ const SearchBar = () => {
           type="text"
           data-testid="search-input"
           placeholder="Search Pokémon"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          color="brand.blue.900"
+          value={localSearchTerm}
+          onChange={(e) => setLocalSearchTerm(e.target.value)}
           rounded="full"
         />
         <InputRightElement width="min-content" mr={1}>

@@ -18,8 +18,7 @@ import {
   GetPokemonDetailsDocument,
   GetPokemonDetailsQuery,
 } from "../../generated/graphql";
-import { useLazyQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useQuery } from "@apollo/client";
 
 interface PokemonDetailsModalProps {
   bgColor: string;
@@ -35,18 +34,10 @@ const PokemonDetailsModal = ({
   bgColor,
   pokemonID,
 }: PokemonDetailsModalProps) => {
-  const [getPokemonDetails, { data, loading, error }] =
-    useLazyQuery<GetPokemonDetailsQuery>(GetPokemonDetailsDocument);
-
-  useEffect(() => {
-    if (pokemonID !== null) {
-      getPokemonDetails({ variables: { id: pokemonID } });
-    }
-  }, [pokemonID, getPokemonDetails]);
-
-  if (loading) {
-    return <CustomSpinner />;
-  }
+  const { data, loading, error } = useQuery<GetPokemonDetailsQuery>(
+    GetPokemonDetailsDocument,
+    { variables: { id: pokemonID } }
+  );
 
   if (error) {
     return <p>Error: {error.message}</p>;
@@ -65,6 +56,7 @@ const PokemonDetailsModal = ({
       motionPreset="slideInBottom"
     >
       <ModalOverlay />
+
       <ModalContent bgColor={bgColor} overflow="hidden" width="360px">
         <ModalCloseButton />
         <ModalBody

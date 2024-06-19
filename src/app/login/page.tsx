@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import SplashScreen from "../components/SplashScreen";
 
-import { useFormDataContext } from "../../context/FormDataContext";
+import { useUserContext } from "../../context/UserContext";
 
 export interface FormValues {
   username: string;
@@ -27,7 +27,7 @@ export interface FormValues {
 export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { formData, setFormData } = useFormDataContext();
+  const { userContextData, setUserContextData } = useUserContext();
 
   const {
     handleSubmit,
@@ -35,15 +35,15 @@ export default function Page() {
     formState: { errors, isSubmitting, isValid },
   } = useForm<FormValues>({
     defaultValues: {
-      username: formData.username,
-      jobTitle: formData.jobTitle,
+      username: userContextData.username,
+      jobTitle: userContextData.jobTitle,
     },
     mode: "onBlur",
   });
 
   const onSubmit = (data: FormValues) => {
     setIsLoading(true);
-    setFormData(data);
+    setUserContextData(data);
     localStorage.setItem("isLoggedIn", "true");
     // Simulate an async login process
     setTimeout(() => {
