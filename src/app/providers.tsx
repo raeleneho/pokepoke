@@ -6,6 +6,7 @@ import { ApolloWrapper } from "../lib/apollo-wrapper";
 import useAuth from "./hooks/useAuth";
 import { UserContextDataProvider } from "../context/UserContext";
 import { SearchContextProvider } from "src/context/SearchContext";
+import SplashScreen from "./components/SplashScreen";
 
 export const theme = extendTheme({
   colors: {
@@ -36,7 +37,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ApolloWrapper>
       <ChakraProvider theme={theme}>
         <UserContextDataProvider>
-          <SearchContextProvider>{children}</SearchContextProvider>
+          <Suspense fallback={<SplashScreen />}>{children}</Suspense>
         </UserContextDataProvider>
       </ChakraProvider>
     </ApolloWrapper>
