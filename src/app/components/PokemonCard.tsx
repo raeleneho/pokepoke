@@ -69,6 +69,7 @@ const PokemonCard = ({
             width={180}
             height={180}
             data-testid="pokemon-image"
+            priority
           />
         )}
       </MotionBox>
