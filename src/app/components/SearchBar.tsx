@@ -33,6 +33,7 @@ const SearchBar = () => {
         <Input
           type="text"
           data-testid="search-input"
+          tabIndex={0}
           placeholder="Search Pokémon"
           color="brand.blue.900"
           value={localSearchTerm}

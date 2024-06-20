@@ -43,6 +43,7 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
             fontStyle="italic"
             textAlign={{ base: "left" }}
             fontSize={{ md: "2xl" }}
+            tabIndex={0}
             cursor="pointer"
             onClick={() => router.push("/home")}
           >
