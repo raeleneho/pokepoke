@@ -39,7 +39,7 @@ const PokemonCard = ({
   return (
     <MotionBox
       data-testid="pokemon-card"
-      width="240px"
+      width="280px"
       bg={bgColor}
       p={4}
       rounded="sm"
@@ -58,7 +58,7 @@ const PokemonCard = ({
         position="relative"
         top="200px"
         left="50%"
-        transform="translate(-50%, -40%)"
+        transform="translate(-40%, -40%)"
         zIndex="1"
         animate={selected === imageUrl ? bounceAnimation : {}}
       >

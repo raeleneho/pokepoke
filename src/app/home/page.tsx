@@ -124,7 +124,7 @@ export default function Home() {
                 padding="6"
                 boxShadow="lg"
                 bgColor="gray.100"
-                width="240px"
+                width="280px"
                 height="400px"
               />
             ))}

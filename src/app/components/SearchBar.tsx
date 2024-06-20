@@ -9,6 +9,7 @@ import { IoSearch } from "react-icons/io5";
 import { useSearchContext } from "../../context/SearchContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { i } from "vitest/dist/reporters-yx5ZTtEV.js";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -37,6 +38,9 @@ const SearchBar = () => {
           color="brand.blue.900"
           value={localSearchTerm}
           onChange={(e) => setLocalSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") triggerSearch();
+          }}
           rounded="full"
         />
         <InputRightElement width="min-content" mr={1}>
