@@ -49,6 +49,18 @@ The project follows a modular structure to ensure scalability and maintainabilit
 
 Cypress is used for end-to-end testing. Cypress tests can be found in the `cypress/e2e` directory. The tests cover user interactions and critical workflows to ensure the application works as expected.
 
+1. To open Cypress test runner:
+
+   ```bash
+   npm run cypress:open
+   ```
+
+2. To run Cypress tests in headless mode:
+
+   ```bash
+   npm run cypress:run
+   ```
+
 ### Mocked API
 
 The project uses @apollo/client/testing for mocking GraphQL API requests. Mock data and API configuration can be found in the `src/app/_mocks_` directory. This allows for testing components in isolation and ensuring they work correctly with the GraphQL queries.

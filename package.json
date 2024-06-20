@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
@@ -16,7 +17,6 @@
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
     "framer-motion": "^11.2.10",
     "next": "^14.2.4",
     "react": "^18",
@@ -32,18 +32,14 @@
     "@graphql-codegen/typescript-operations": "^4.2.1",
     "@graphql-codegen/typescript-react-apollo": "^4.3.0",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@testing-library/dom": "^10.1.0",
-    "@testing-library/react": "^16.0.0",
     "@types/node": "^20",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
     "cypress": "^13.11.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "graphql": "^16.8.2",
     "jsdom": "^24.1.0",
-    "typescript": "^5",
-    "vitest": "^1.6.0"
+    "typescript": "^5"
   }
 }
