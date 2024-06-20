@@ -16,7 +16,7 @@ const MotionBox = motion(Box);
 
 const bounceAnimation = {
   y: ["-50%", "-55%", "-50%"],
-  x: ["-50%"],
+  x: ["-40%"],
   transition: {
     duration: 0.4,
     repeat: 2,

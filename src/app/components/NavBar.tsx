@@ -31,12 +31,17 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
   return (
     <>
       <Flex justify="space-between" align="center">
-        <Flex justify="flex-start" align="center" gap={4}>
+        <Flex
+          direction={{ base: "column", lg: "row" }}
+          align={{ base: "flex-start", lg: "center" }}
+          gap={{ base: 1, lg: 4 }}
+        >
           <Text
             as="h1"
             fontWeight={900}
             color="brand.blue.900"
             fontStyle="italic"
+            textAlign={{ base: "left" }}
             fontSize={{ md: "2xl" }}
             cursor="pointer"
             onClick={() => router.push("/home")}
@@ -45,9 +50,11 @@ const Navbar = ({ displaySearch }: NavbarProps) => {
           </Text>
           <Text
             fontWeight={440}
+            fontSize={{ base: "12px", lg: "16px" }}
+            lineHeight={{ base: "1.2", lg: "1.5" }}
+            textAlign={{ base: "right", md: "left" }}
             color="brand.blue.500"
             letterSpacing="0.02em"
-            display={{ base: "none", md: "block" }}
           >
             Your ultimate Pokémon pocketbook.
           </Text>
