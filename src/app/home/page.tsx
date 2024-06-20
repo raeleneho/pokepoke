@@ -157,7 +157,7 @@ export default function Home() {
             );
           })}
         </Flex>
-        <Flex justifyContent="center" align="center" gap={4}>
+        <Flex justifyContent="center" align="center" gap={4} pb={5}>
           <IconButton
             icon={<RiArrowLeftSLine />}
             aria-label="Previous Page"
