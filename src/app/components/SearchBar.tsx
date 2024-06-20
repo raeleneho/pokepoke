@@ -9,7 +9,6 @@ import { IoSearch } from "react-icons/io5";
 import { useSearchContext } from "../../context/SearchContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { i } from "vitest/dist/reporters-yx5ZTtEV.js";
 
 const SearchBar = () => {
   const router = useRouter();
