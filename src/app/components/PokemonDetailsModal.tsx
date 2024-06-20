@@ -36,7 +36,10 @@ const PokemonDetailsModal = ({
 }: PokemonDetailsModalProps) => {
   const { data, loading, error } = useQuery<GetPokemonDetailsQuery>(
     GetPokemonDetailsDocument,
-    { variables: { id: pokemonID } }
+    {
+      skip: !pokemonID,
+      variables: { id: pokemonID },
+    }
   );
 
   if (error) {
