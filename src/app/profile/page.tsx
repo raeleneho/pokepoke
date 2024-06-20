@@ -34,7 +34,7 @@ export default function Page() {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const updateUser = (data: FormValues) => {
     setIsLoading(true);
     setUserContextData(data);
 
@@ -69,7 +69,7 @@ export default function Page() {
           rounded="md"
           bg="white"
           width={{ base: "auto", lg: "800px" }}
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(updateUser)}
         >
           <Box width="100%">
             <FormLabel m={0} htmlFor="username">

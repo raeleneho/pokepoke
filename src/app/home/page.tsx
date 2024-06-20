@@ -33,6 +33,8 @@ export default function Home() {
 
   const theme = useTheme();
   const colors = Object.keys(theme.colors.brand.secondary);
+
+  // Fetch data
   const { searchTerm, sortOrder, page, offset, itemsPerPage } =
     useSearchContext();
 
@@ -49,22 +51,15 @@ export default function Home() {
     },
   });
 
-  const [clickedImage, setClickedImage] = useState("");
-  const [selectedBgColor, setSelectedBgColor] = useState<string>("");
-  const [selectedPokemonID, setSelectedPokemonID] = useState<number | null>(
-    null
-  );
-
-  const {
-    isOpen: isProfileModalOpen,
-    onOpen: onProfileModalOpen,
-    onClose: onProfileModalClose,
-  } = useDisclosure();
+  const pokemons = useMemo(() => {
+    return paginatedData?.pokemon_v2_pokemon ?? [];
+  }, [paginatedData]);
 
   const handleSort = (order: "asc" | "desc") => {
     router.push(`home?page=${page}&search=${searchTerm}&sortOrder=${order}`);
   };
 
+  // Pagination
   const navigatePage = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) {
       return;
@@ -75,14 +70,22 @@ export default function Home() {
     router.push(queryString);
   };
 
-  const pokemons = useMemo(() => {
-    return paginatedData?.pokemon_v2_pokemon ?? [];
-  }, [paginatedData]);
-
   const totalPages = Math.ceil(
     (paginatedData?.pokemon_v2_pokemon_aggregate?.aggregate?.count || 0) /
       itemsPerPage
   );
+
+  //Handle modal
+  const [clickedImage, setClickedImage] = useState("");
+  const [selectedBgColor, setSelectedBgColor] = useState<string>("");
+  const [selectedPokemonID, setSelectedPokemonID] = useState<number | null>(
+    null
+  );
+  const {
+    isOpen: isProfileModalOpen,
+    onOpen: onProfileModalOpen,
+    onClose: onProfileModalClose,
+  } = useDisclosure();
 
   if (paginatedError) {
     return <p>Error: {paginatedError.message}</p>;

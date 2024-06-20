@@ -41,7 +41,7 @@ export default function Page() {
     mode: "onBlur",
   });
 
-  const onSubmit = (data: FormValues) => {
+  const login = (data: FormValues) => {
     setIsLoading(true);
     setUserContextData(data);
     localStorage.setItem("isLoggedIn", "true");
@@ -72,7 +72,7 @@ export default function Page() {
           rounded="md"
           maxWidth="100%"
           width={{ base: "100%", md: "600px" }}
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(login)}
         >
           <Flex
             direction="row"
