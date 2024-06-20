@@ -61,10 +61,6 @@ Cypress is used for end-to-end testing. Cypress tests can be found in the `cypre
    npm run cypress:run
    ```
 
-### Mocked API
-
-The project uses @apollo/client/testing for mocking GraphQL API requests. Mock data and API configuration can be found in the `src/app/_mocks_` directory. This allows for testing components in isolation and ensuring they work correctly with the GraphQL queries.
-
 ## Further Potential Improvements
 
 If more time was allowed, the following improvements could be made:

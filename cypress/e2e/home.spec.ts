@@ -1,5 +1,3 @@
-import { mocks } from "src/_mocks_/graphql/pokemonsMock";
-
 describe("Home Page", () => {
   const GRAPHQL_ENDPOINT = "https://beta.pokeapi.co/graphql/v1beta";
 
